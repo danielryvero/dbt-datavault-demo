@@ -1,0 +1,13 @@
+.idea/
+.vscode/
+
+logs/
+*.log
+
+target/
+
+package-lock.yml
+dbt_packages/
+dbt_internal_packages/
+
+.env

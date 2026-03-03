@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: SAT_PART_MAIN
+    description: "PART Satellite holding main information"
+    columns:
+      - name: HUB_ID_PART
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_PART')
+                field: HUB_ID_PART
+      - name: TENANT
+        description: "Tenant information"          
+      - name: SIZE
+        description: "Size of the part"
+      - name: CONTAINER
+        description: "Container of the part"
+      - name: RETAIL_PRICE
+        description: "Price of the part"
+      - name: DT_LOAD
+        description: "Datetime the data has been loaded"
+      - name: HASH_DIFF
+        description: "hash diff identifier of the record"
+      - name: RECORD_SOURCE
+        description: "Source system for the record"		

@@ -1,0 +1,72 @@
+{{ config(
+      alias='HIST_DATA_25_ITEMS_LOOP'
+    , materialized='table')
+}}
+
+{% set n_attrs = 26 %}
+{% set attrs_list = range(1, n_attrs) %}
+
+SELECT
+	hist_data.primarykey, 
+    hist_data.num_leg,
+    hist_data.num_pax,
+    {% for m in attrs_list %}     
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 1) AS history_{{m}}_history_type, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 2) AS history_{{m}}_terminal, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 3) AS history_{{m}}_agent, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 4) AS history_{{m}}_date, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 5) AS history_{{m}}_hour, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 6) AS history_{{m}}_city_office, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 7) AS history_{{m}}_office_number, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 8) AS history_{{m}}_agent_client, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 9) AS history_{{m}}_passenger, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 10) AS history_{{m}}_accepted_without_seat_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 11) AS history_{{m}}_seat_assigned_in_this_update, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 12) AS history_{{m}}_fast_track_type, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 13) AS history_{{m}}_boarding_number, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 14) AS history_{{m}}_standby_number, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 15) AS history_{{m}}_standby_reason, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 16) AS history_{{m}}_air_zone_passenger, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 17) AS history_{{m}}_upgrade, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 18) AS history_{{m}}_cash_payments, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 19) AS history_{{m}}_noboardingpass, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 20) AS history_{{m}}_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 21) AS history_{{m}}_updatedelete_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 22) AS history_{{m}}_free_text, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 23) AS history_{{m}}_cporbn_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 24) AS history_{{m}}_issued_void, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 25) AS history_{{m}}_emd_number, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 26) AS history_{{m}}_upgradingtype, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 27) AS history_{{m}}_upgradeinitialclosing, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 28) AS history_{{m}}_compensation_type, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 29) AS history_{{m}}_bonus_type, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 30) AS history_{{m}}_bonus_type_action, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 31) AS history_{{m}}_sfpd_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 32) AS history_{{m}}_additional_service_paid_type, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 33) AS history_{{m}}_aqq_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 34) AS history_{{m}}_esta_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 35) AS history_{{m}}_esta_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 36) AS history_{{m}}_unuso_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 37) AS history_{{m}}_aqq_infant_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 38) AS history_{{m}}_aqq_infant_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 39) AS history_{{m}}_esta_infant_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 40) AS history_{{m}}_esta_infant_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 41) AS history_{{m}}_apps_country, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 42) AS history_{{m}}_app_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 43) AS history_{{m}}_message_code, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 44) AS history_{{m}}_app_infant_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 45) AS history_{{m}}_app_infant_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 46) AS history_{{m}}_message_code_infant, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 47) AS history_{{m}}_irpa_status, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 48) AS history_{{m}}_irpa_indicator_canceled, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 49) AS history_{{m}}_unsolicited_irpa_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 50) AS history_{{m}}_infant_irpa_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 51) AS history_{{m}}_irpa_status_infant, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 52) AS history_{{m}}_ind_canceled_child, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 53) AS history_{{m}}_unsolicited_irpa_infant_indicator, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 54) AS history_{{m}}_sfpf_status_2, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 55) AS history_{{m}}_edifact_status_message, 
+    split_part(hist_data.history_{{m}}::text, '\002'::text, 56) AS history_{{m}}_error_code, 
+    {% endfor %}
+    '{{ ref('history_data') }}' as record_source
+from {{ ref('history_data') }} hist_data

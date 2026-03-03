@@ -1,0 +1,35 @@
+
+version: 2
+
+models:
+  - name: SAT_ORDERS_DETAIL
+    description: "Orders Satellite holding detail information"
+    columns:
+      - name: HUB_ID_ORDERS
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_ORDERS')
+                field: HUB_ID_ORDERS
+      - name: TENANT
+        description: "Tenant information"          
+      - name: CLERK
+        description: "CLERK associated to the order"
+      - name: ORDER_PRIORITY
+        description: "Priority of the order"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['1-URGENT','2-HIGH','3-MEDIUM','4-NOT SPECIFIED','5-LOW']
+      - name: SHIP_PRIORITY
+        description: "Priority of the shipment"
+      - name: COMMENT
+        description: "Additional comments"        
+      - name: DT_LOAD
+        description: "Datetime the data has been loaded"
+      - name: HASH_DIFF
+        description: "hash diff identifier of the record"
+      - name: RECORD_SOURCE
+        description: "Source system for the record"		

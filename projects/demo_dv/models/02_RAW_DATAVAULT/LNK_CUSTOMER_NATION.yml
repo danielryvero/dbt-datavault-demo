@@ -1,0 +1,50 @@
+
+version: 2
+
+models:
+
+  - name: LNK_CUSTOMER_NATION
+    description: "Link for customer nation table"
+    config:
+      contract:
+        enforced: true
+        
+    columns:
+      - name: LINK_ID_CUSTOMER_NATION
+        data_type: VARCHAR
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+      - name: HUB_ID_CUSTOMER
+        data_type: VARCHAR
+        description: "HUB ID key associated to the CUSTOMER"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_CUSTOMER')
+                field: HUB_ID_CUSTOMER
+      - name: HUB_ID_NATION	  
+        data_type: VARCHAR
+        description: "HUB ID key associated to the NATION"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_NATION')
+                field: HUB_ID_NATION
+      - name: CUSTOMER_KEY
+        data_type: decimal(38,0)
+        description: "Business key associated to the CUSTOMER"
+      - name: NATION_KEY	
+        data_type: decimal(38,0)  
+        description: "Business key associated to the NATION"
+      - name: TENANT
+        data_type: VARCHAR
+        description: "Tenant information"
+      - name: DT_LOAD
+        data_type: datetime
+        description: "Datetime the data has been loaded"
+      - name: RECORD_SOURCE
+        data_type: VARCHAR
+        description: "Source system for the record"	

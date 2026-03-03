@@ -1,0 +1,10 @@
+-- select *
+-- from {{ ref('HUB_CUSTOMER') }}
+-- WHERE CUSTOMER_KEY = ( SELECT max(CUSTOMER_KEY) FROM {{ ref('HUB_CUSTOMER') }})
+
+
+
+
+-- SELECT *
+-- FROM {{ ref('CUSTOMER_BAL') }}
+-- WHERE CUSTOMER_KEY IN (30007, 150002, 150003)

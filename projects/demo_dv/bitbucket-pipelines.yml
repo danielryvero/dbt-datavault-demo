@@ -1,0 +1,27 @@
+image: ghcr.io/dbt-labs/dbt-snowflake:1.8.1
+
+pipelines:
+  # Pipeline para Pull Requests (Integración Continua - CI)
+  pull-requests:
+    '**':
+      - step:
+          name: "CI Check: Build and Test changes on DEV"
+          script:
+            # Navega a la carpeta de tu proyecto
+            - cd demo_dv
+            # Instala dependencias y ejecuta el build contra el target 'dev'
+            - dbt deps --profiles-dir ../profiles/snowflake
+            - dbt build --select state:new+ state:modified+ --profiles-dir ../profiles/snowflake --target dev
+
+  # Pipeline para la rama principal (Despliegue Continuo - CD)
+  branches:
+    main: # O 'master' si usas ese nombre
+      - step:
+          name: "CD: Run and Test Production"
+          deployment: production
+          script:
+            - cd demo_dv
+            - dbt deps --profiles-dir ../profiles/snowflake
+            - dbt run --profiles-dir ../profiles/snowflake --target pro
+            - dbt test --profiles-dir ../profiles/snowflake --target pro
+

@@ -1,0 +1,106 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: "demo_dv"
+version: "1.0.0"
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: "demo_dv"
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets: # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+vars:
+  cod_tenant: SDG_ES
+  query_tagging: "TRUE"
+  sw_debug: TRUE
+
+flags:
+  require_explicit_package_overrides_for_builtin_materializations: False
+
+on-run-end:
+  - "{{ log_results( results ) }}"
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+models:
+  elementary:
+    +database: |
+      {%- if target.name == "dev" -%} EDW_DV_DEMO
+      {%- elif target.name == "qa" -%} EDW_DV_DEMO
+      {%- elif target.name == "prod" -%} EDW_DV
+      {%- else -%} INVALID_DATABASE
+      {%- endif -%}
+    +schema: OBSERVABILITY
+
+  demo_dv:
+    +database: |
+      {%- if target.name == "dev" -%} EDW_DV_DEMO
+      {%- elif target.name == "qa" -%} EDW_DV_DEMO
+      {%- elif target.name == "prod" -%} EDW_DV
+      {%- else -%} INVALID_DATABASE
+      {%- endif -%}
+
+    # Config indicated by + and applies to all files under models/demo_dv/
+    +transient: false
+    +pre-hook:
+      - "{{ log_model( status='START' ) }}"
+    +post-hook:
+      - "{{ log_model( status='END' ) }}"
+
+    01_DATA_TRANSFORM:
+      +schema: "RAW_DATAVAULT"
+      +materialized: table
+      +tags:
+        - "DT"
+
+    02_RAW_DATAVAULT:
+      +schema: "RAW_DATAVAULT"
+      +materialized: incremental
+      +post-hook:
+        - "{{ create_latest_version_view() }}"
+      +on_schema_change: fail
+      +tags:
+        - "RDV"
+
+    03_BUSINESS_VAULT:
+      +schema: "BUSINESS_VAULT"
+      +materialized: table
+      +tags:
+        - "BDV"
+
+    04_INFORMATION_MART:
+      +schema: "INFORMATION_MART"
+      +materialized: incremental
+      +on_schema_change: fail
+      +tags:
+        - "IM"
+
+
+
+seeds:
+  # Los seeds siempre van al schema LANDING
+  +schema: LANDING
+
+data_tests:
+  +store_failures: true
+
+query-comment:
+  comment: "{{ query_comment(node) }}"
+  append: true

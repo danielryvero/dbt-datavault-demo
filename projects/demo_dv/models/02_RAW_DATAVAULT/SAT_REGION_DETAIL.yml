@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: SAT_REGION_DETAIL
+    description: "Regionr Satellite holding detail information"
+    columns:
+      - name: HUB_ID_REGION
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_REGION')
+                field: HUB_ID_REGION         
+      - name: TENANT
+        description: "Tenant information"          
+      - name: REGION
+        description: "Region name"
+      - name: COMMENT
+        description: "Additional comments"
+      - name: DT_LOAD
+        description: "Datetime the data has been loaded"
+      - name: HASH_DIFF
+        description: "hash diff identifier of the record"
+      - name: RECORD_SOURCE
+        description: "Source system for the record"		

@@ -1,0 +1,37 @@
+{{ config(
+      alias='SAT_ORDERS_MAIN'
+    , materialized='incremental')
+}}
+
+
+WITH SAT_DATA AS (
+SELECT  
+      MD5(O_ORDERKEY) HUB_ID_ORDERS
+      , '{{ var('cod_tenant') }}' AS TENANT      
+      , O_ORDERSTATUS AS STATUS
+      , O_ORDERDATE AS ORDER_DATE
+      , O_TOTALPRICE AS TOTAL_PRICE
+      , CURRENT_TIMESTAMP::TIMESTAMP_NTZ AS DT_LOAD            
+      , MD5( COALESCE(O_ORDERSTATUS,'#')
+            ||COALESCE(O_ORDERDATE,'-1') 
+            ||COALESCE(O_TOTALPRICE,-1) 
+            ) HASH_DIFF
+      , '{{ source('SF_SAMPLE', 'ORDERS') }}' AS RECORD_SOURCE
+FROM {{ source('SF_SAMPLE', 'ORDERS') }} 
+)
+
+SELECT 
+      SAT_DATA.HUB_ID_ORDERS
+      , SAT_DATA.TENANT
+      , SAT_DATA.STATUS
+      , SAT_DATA.ORDER_DATE
+      , SAT_DATA.TOTAL_PRICE
+      , SAT_DATA.DT_LOAD
+      , SAT_DATA.HASH_DIFF
+      , SAT_DATA.RECORD_SOURCE
+FROM SAT_DATA SAT_DATA
+LEFT JOIN {{ this }} SAT
+	ON SAT.HUB_ID_ORDERS =  SAT_DATA.HUB_ID_ORDERS
+   AND SAT.HASH_DIFF = SAT_DATA.HASH_DIFF
+WHERE SAT.HUB_ID_ORDERS IS NULL
+

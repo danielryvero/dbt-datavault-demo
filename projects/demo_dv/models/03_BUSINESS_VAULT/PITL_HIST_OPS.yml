@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: PITL_HIST_OPS
+    description: "PIT containing the historical Orders-Part-Supplier data"
+
+    config:
+      access: public
+      contract:
+        enforced: true
+
+    columns:
+      - name: LINK_ID_LINEITEM_OPS
+        data_type: VARCHAR
+        description: "Link id for lineitem orders-part-supplier"
+        data_tests:
+          - not_null
+
+      - name: DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Link load timestamp"
+
+      - name: SATL_DATES_DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Satellite load timestamp from SATL_LINEITEM_OPS_DATES"
+
+      - name: SATL_DETAIL_DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Satellite load timestamp from SATL_LINEITEM_OPS_DETAIL"
+
+      - name: TENANT
+        data_type: VARCHAR
+        description: "Tenant information"

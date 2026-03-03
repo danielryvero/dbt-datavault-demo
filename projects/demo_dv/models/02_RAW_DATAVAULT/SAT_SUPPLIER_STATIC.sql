@@ -1,0 +1,37 @@
+{{ config(
+      alias='SAT_SUPPLIER_STATIC'
+    , materialized='incremental')
+}}
+
+
+WITH SAT_DATA AS (
+SELECT  
+      MD5(S_SUPPKEY) HUB_ID_SUPPLIER
+      , '{{ var('cod_tenant') }}' AS TENANT      
+      , S_NAME AS NAME
+      , S_ADDRESS AS ADDRESS
+      , S_PHONE AS PHONE
+      , CURRENT_TIMESTAMP::TIMESTAMP_NTZ AS DT_LOAD            
+      , MD5( COALESCE(S_NAME,'#')
+            ||COALESCE(S_ADDRESS,'#') 
+            ||COALESCE(S_PHONE,'#') 
+            ) HASH_DIFF
+      , '{{ source('SF_SAMPLE', 'SUPPLIER') }}' AS RECORD_SOURCE
+FROM {{ source('SF_SAMPLE', 'SUPPLIER') }} 
+)
+
+SELECT 
+      SAT_DATA.HUB_ID_SUPPLIER
+      , SAT_DATA.TENANT
+      , SAT_DATA.NAME
+      , SAT_DATA.ADDRESS
+      , SAT_DATA.PHONE
+      , SAT_DATA.DT_LOAD
+      , SAT_DATA.HASH_DIFF
+      , SAT_DATA.RECORD_SOURCE
+FROM SAT_DATA SAT_DATA
+LEFT JOIN {{ this }} SAT
+	ON SAT.HUB_ID_SUPPLIER =  SAT_DATA.HUB_ID_SUPPLIER
+   AND SAT.HASH_DIFF = SAT_DATA.HASH_DIFF
+WHERE SAT.HUB_ID_SUPPLIER IS NULL
+

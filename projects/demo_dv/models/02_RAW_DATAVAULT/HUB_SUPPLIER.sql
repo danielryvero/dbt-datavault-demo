@@ -1,0 +1,25 @@
+{{ config(
+      alias='HUB_SUPPLIER'
+    , materialized='incremental')
+}}
+
+
+WITH SUPPLIER AS (
+      SELECT 
+            MD5(S_SUPPKEY) HUB_ID_SUPPLIER
+            , S_SUPPKEY AS SUPPLIER_KEY
+            , '{{ var('cod_tenant') }}' AS TENANT
+            , CURRENT_TIMESTAMP::TIMESTAMP_NTZ AS DT_LOAD   
+            , '{{ source('SF_SAMPLE', 'SUPPLIER') }}' AS RECORD_SOURCE
+      FROM {{ source('SF_SAMPLE', 'SUPPLIER') }} 
+) 
+SELECT 
+        SUPPLIER.HUB_ID_SUPPLIER
+      , SUPPLIER.SUPPLIER_KEY
+      , SUPPLIER.TENANT
+      , SUPPLIER.DT_LOAD
+      , SUPPLIER.RECORD_SOURCE
+FROM SUPPLIER SUPPLIER
+LEFT JOIN {{ this }} HUB
+	ON HUB.HUB_ID_SUPPLIER =  SUPPLIER.HUB_ID_SUPPLIER
+WHERE HUB.HUB_ID_SUPPLIER IS NULL

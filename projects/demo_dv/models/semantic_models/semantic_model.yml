@@ -1,0 +1,140 @@
+version: 2
+
+semantic_models:
+  # ======================================================
+  # Modelo Semántico para SALDO ACTUAL DEL CLIENTE
+  # ======================================================
+  - name: sm_customer_balance
+    description: "Represents the most up-to-date information and account balance for each customer."
+    # Modelo físico de dbt
+    model: ref('CUSTOMER_BAL')
+
+    # La entidad principal es el cliente
+    entities:
+      - name: customer
+        type: primary
+        expr: HUB_ID_CUSTOMER
+
+    # La dimensión de tiempo por defecto para las métricas
+    defaults:
+      agg_time_dimension: load_timestamp
+
+    # Dimensiones: Atributos para filtrar y agrupar
+    dimensions:
+      - name: load_timestamp
+        type: time
+        expr: DT_LOAD
+        type_params:
+          time_granularity: day
+
+      - name: customer_name
+        type: categorical
+        expr: CUSTOMER_NAME
+
+      - name: customer_address
+        type: categorical
+        expr: CUSTOMER_ADDRESS
+
+      - name: customer_phone
+        type: categorical
+        expr: CUSTOMER_PHONE
+
+    # Medidas: Campos numéricos que se pueden agregar
+    measures:
+      - name: total_balance
+        agg: sum
+        expr: ACCOUNT_BALANCE
+      
+      - name: average_balance
+        agg: average
+        expr: ACCOUNT_BALANCE
+      
+      - name: customer_count
+        agg: count
+        expr: HUB_ID_CUSTOMER
+
+  - name: sm_customer_balance_history
+    description: "Represents the historical balances of customers over time."
+    model: ref('HIST_CUSTOMER_BAL')
+
+    entities:
+      - name: customer
+        type: primary
+        expr: HUB_ID_CUSTOMER
+
+    defaults:
+      agg_time_dimension: metrics_load_timestamp
+
+    dimensions:
+      - name: metrics_load_timestamp
+        type: time
+        expr: SAT_METRICS_DT_LOAD
+        type_params:
+          time_granularity: day
+
+      - name: contact_load_timestamp
+        type: time
+        expr: SAT_CONTACT_DT_LOAD
+        type_params:
+          time_granularity: day
+
+      - name: historical_customer_name     
+        type: categorical
+        expr: CUSTOMER_NAME
+
+      - name: phone_area_code
+        type: categorical
+        description: "El código de área del teléfono del cliente, usado como proxy geográfico."
+        expr: "SPLIT_PART(CUSTOMER_PHONE, '-', 1)"
+
+    measures:
+      - name: historical_average_balance
+        description: "Average balance of customers across historical records."
+        agg: average
+        expr: ACCOUNT_BALANCE
+
+      - name: customer_count_hist
+        description: "Number of distinct customers per time period."
+        agg: count_distinct
+        expr: HUB_ID_CUSTOMER
+
+
+
+# ======================================================
+# MÉTRICAS: Cálculos de negocio que los usuarios consumen
+# ======================================================
+metrics:
+  - name: current_total_balance
+    label: "Current Total Balance"
+    description: "The sum of the latest account balances across all customers."
+    type: simple
+    type_params:
+      measure: total_balance
+
+  - name: current_average_balance
+    label: "Current Average Balance"
+    description: "The average of the latest account balances across all customers."
+    type: simple
+    type_params:
+      measure: average_balance
+
+  - name: total_customers
+    label: "Total Customers"
+    description: "The total count of unique customers."
+    type: simple
+    type_params:
+      measure: customer_count
+
+  - name: customer_count_hist
+    label: "Historical Customer Count"
+    description: "Number of distinct customers per time period."
+    type: simple
+    type_params:
+      measure: customer_count_hist
+
+  - name: historical_average_balance
+    label: "Historical Average Balance"
+    description: "Average balance of customers across historical records."
+    type: simple
+    type_params:
+      measure: historical_average_balance

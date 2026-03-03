@@ -1,0 +1,64 @@
+
+version: 2
+
+models:
+
+  - name: SAT_CUSTOMER_CONTACT
+    latest_version: 2
+    description: "Customer Satellite holding personal contact information"
+
+    config:
+      contract:
+        enforced: true
+
+    # In this example, we are adding a column to the original model, so we can just use the 'diff' mode instead of the fully specified
+
+    columns:
+      - name: HUB_ID_CUSTOMER
+        data_type: VARCHAR
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_CUSTOMER')
+                field: HUB_ID_CUSTOMER
+      - name: TENANT
+        description: "Tenant information"
+        data_type: VARCHAR
+      - name: CUSTOMER_NAME
+        description: "Customer name"
+        data_type: VARCHAR
+      - name: CUSTOMER_ADDRESS
+        description: "Customer home address"
+        data_type: VARCHAR
+      - name: CUSTOMER_PHONE
+        description: "Customer primary phone number"
+        data_type: VARCHAR
+      - name: DT_LOAD
+        description: "Datetime the data has been loaded"
+        data_type: TIMESTAMP_NTZ
+      # New column added in v2
+      - name: DT_LOAD_BATCH
+        description: "Datetime the BATCH has been kicked-off"
+        data_type: TIMESTAMP_NTZ
+      # End of new column added in v2        
+      - name: HASH_DIFF
+        description: "hash diff identifier of the record"
+        data_type: VARCHAR
+      - name: RECORD_SOURCE
+        description: "Source system for the record"            
+        data_type: VARCHAR        
+
+    # Declare the versions. We can just use the 'diff' mode instead of the fully specified
+
+    versions:
+      - v: 2
+        # Matches all columns defined above
+    
+      - v: 1
+        # this version does not use the new column, so we need to exclude it as this would be a breaking change
+        columns:
+          # This means: use the 'columns' list from above, but exclude DT_LOAD_BATCH which is the new one
+          - include: all
+            exclude: [DT_LOAD_BATCH]

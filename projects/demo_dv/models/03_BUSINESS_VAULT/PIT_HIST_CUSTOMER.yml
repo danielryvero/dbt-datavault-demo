@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: PIT_HIST_CUSTOMER
+    description: "PIT containing the historical customer data"
+
+    config:
+      access: public
+      contract:
+        enforced: true
+
+    columns:
+      - name: HUB_ID_CUSTOMER
+        data_type: VARCHAR
+        description: "Hub id"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Hub id load timestamp"
+
+      - name: SAT_CONTACT_DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Satellite load timestamp from SAT_CUSTOMER_CONTACT"
+
+      - name: SAT_METRICS_DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Satellite load timestamp from SAT_CUSTOMER_METRICS"
+
+      - name: TENANT
+        data_type: VARCHAR
+        description: "Tenant information"

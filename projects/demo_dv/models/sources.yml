@@ -1,0 +1,82 @@
+version: 2
+
+sources:
+  - name: SF_SAMPLE
+    database: |
+      {%- if target.name == "dev" -%} EDW_DV_DEMO
+      {%- elif target.name == "qa" -%} EDW_DV_DEMO
+      {%- elif target.name == "prod" -%} EDW_DV
+      {%- else -%} INVALID_DATABASE
+      {%- endif -%}
+    schema: LANDING
+    tables:
+      - name: CUSTOMER
+        description: CUSTOMER data table
+        identifier: CUSTOMER
+        config:
+          loaded_at_query: |
+            select max(DT_LOAD)
+            from {{ this }}
+            where DT_LOAD >= current_timestamp - interval '5 minutes'
+          freshness:
+            warn_after: {count: 2, period: day} 
+            error_after: {count: 5, period: day} 
+
+      - name: LINEITEM
+        description: lineitem data table
+        identifier: LINEITEM
+        config:
+          freshness: null 
+
+      - name: NATION
+        description: NATION data table
+        identifier: NATION
+        config:
+          freshness: null 
+
+      - name: ORDERS
+        description: ORDERS data table
+        identifier: ORDERS
+        config:
+          freshness: null 
+
+      - name: PART
+        description: PART data table
+        identifier: PART
+        config:
+          freshness: null 
+
+      - name: PARTSUPP
+        description: PARTSUPP data table
+        identifier: PARTSUPP
+        config:
+          freshness: null 
+
+      - name: REGION
+        description: REGION data table
+        identifier: REGION
+        config:
+          freshness: null 
+
+      - name: SUPPLIER
+        description: SUPPLIER data table
+        identifier: SUPPLIER
+        config:
+          freshness: null 
+
+
+  - name: CUSTOM_LOG
+    database: |
+      {%- if target.name == "dev" -%} EDW_DV_DEMO
+      {%- elif target.name == "qa" -%} EDW_DV_DEMO
+      {%- elif target.name == "prod" -%} EDW_DV
+      {%- else -%} INVALID_DATABASE
+      {%- endif -%}
+    schema: "RAW_DATAVAULT"
+    tables:
+      - name: EXECUTION_LOG_TABLE
+        description: Execution log table 
+        identifier: EXECUTION_LOG_TABLE
+        config:
+          freshness: null 
+

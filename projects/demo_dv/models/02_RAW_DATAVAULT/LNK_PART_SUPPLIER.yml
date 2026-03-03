@@ -1,0 +1,50 @@
+
+version: 2
+
+models:
+
+  - name: LNK_PART_SUPPLIER
+    description: "Link for part supplier table"
+    config:
+      contract:
+        enforced: true
+        
+    columns:
+      - name: LINK_ID_PART_SUPPLIER
+        data_type: VARCHAR
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+      - name: HUB_ID_PART
+        data_type: VARCHAR
+        description: "HUB ID key associated to the PART"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_PART')
+                field: HUB_ID_PART
+      - name: HUB_ID_SUPPLIER
+        data_type: VARCHAR
+        description: "HUB ID key associated to the SUPPLIER"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:          
+                to: ref('HUB_SUPPLIER')
+                field: HUB_ID_SUPPLIER
+      - name: PART_KEY
+        data_type: decimal(38,0)
+        description: "Business key associated to the PART"
+      - name: SUPPLIER_KEY	  
+        data_type: decimal(38,0)
+        description: "Business key associated to the SUPPLIER"
+      - name: TENANT
+        data_type: VARCHAR
+        description: "Tenant information"
+      - name: DT_LOAD
+        data_type: datetime
+        description: "Datetime the data has been loaded"
+      - name: RECORD_SOURCE
+        description: "Source system for the record"			
+        data_type: VARCHAR

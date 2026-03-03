@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: SAT_SUPPLIER_STATIC
+    description: "Supplier Satellite holding static information"
+    columns:
+      - name: HUB_ID_SUPPLIER
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_SUPPLIER')
+                field: HUB_ID_SUPPLIER                 
+      - name: TENANT
+        description: "Tenant information"          
+      - name: NAME
+        description: "Name of the supplier"
+      - name: ADDRESS
+        description: "Address of the supplier"
+      - name: PHONE
+        description: "Phone of the supplier"      
+      - name: DT_LOAD
+        description: "Datetime the data has been loaded"
+      - name: HASH_DIFF
+        description: "hash diff identifier of the record"
+      - name: RECORD_SOURCE
+        description: "Source system for the record"		

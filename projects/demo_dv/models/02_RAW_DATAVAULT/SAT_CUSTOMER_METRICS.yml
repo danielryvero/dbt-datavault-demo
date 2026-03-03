@@ -1,0 +1,31 @@
+
+version: 2
+
+models:
+  - name: SAT_CUSTOMER_METRICS
+    description: "Customer Satellite holding metrics information"
+    columns:
+      - name: HUB_ID_CUSTOMER
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_CUSTOMER')
+                field: HUB_ID_CUSTOMER          
+      - name: TENANT
+        description: "Tenant information"
+      - name: ACCOUNT_BALANCE
+        description: "Customer account balance"
+      - name: SEGMENT
+        description: "Customer segment"
+        data_tests: 
+          - accepted_values:
+              arguments:
+                values: ['MACHINERY','BUILDING','HOUSEHOLD','FURNITURE','AUTOMOBILE']
+      - name: DT_LOAD
+        description: "Datetime the data has been loaded"
+      - name: HASH_DIFF
+        description: "hash diff identifier of the record"
+      - name: RECORD_SOURCE
+        description: "Source system for the record"		

@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: PITL_LAST_OPS
+    description: "PIT containing the last available Orders-Part-Supplier data per satellite"
+
+    config:
+      access: public
+      materialized: view
+      contract:
+        enforced: true
+
+    columns:
+      - name: LINK_ID_LINEITEM_OPS
+        data_type: VARCHAR
+        description: "Link id for lineitem orders-part-supplier"
+        data_tests:
+          - not_null
+
+      - name: DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Link load timestamp"
+        data_tests:
+          - not_null
+
+      - name: SATL_DATES_DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Latest load timestamp from SATL_LINEITEM_OPS_DATES"
+        data_tests:
+          - not_null
+
+      - name: SATL_DETAIL_DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Latest load timestamp from SATL_LINEITEM_OPS_DETAIL"
+        data_tests:
+          - not_null
+
+      - name: TENANT
+        data_type: VARCHAR
+        description: "Tenant information"
+        data_tests:
+          - not_null

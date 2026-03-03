@@ -1,0 +1,22 @@
+# file: models/semantic_models/saved_queries.yml
+version: 2
+
+saved_queries:
+  - name: sq_avg_balance_by_area_code
+    description: "Calcula el saldo promedio por prefijo telefónico y lo guarda en una tabla."
+    label: "Average Balance by Area Code"
+    config:
+      tags:
+        - "SM"
+    query_params:
+      metrics:
+        - historical_average_balance
+      group_by:
+        - "Dimension('customer__phone_area_code')"
+
+    exports:
+      - name: export_avg_balance_by_area_code
+        config:
+          export_as: table
+          schema: "SEMANTIC_MODEL"
+          alias: KPIS_AVG_BALANCE_BY_AREA_CODE

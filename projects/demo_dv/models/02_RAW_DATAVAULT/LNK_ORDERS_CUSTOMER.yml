@@ -1,0 +1,51 @@
+
+version: 2
+
+models:
+
+  - name: LNK_ORDERS_CUSTOMER
+    description: "Link for orders customer table"
+    config:
+      contract:
+        enforced: true
+
+    columns:
+      - name: LINK_ID_ORDERS_CUSTOMER
+        data_type: VARCHAR
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: HUB_ID_ORDERS
+        data_type: VARCHAR
+        description: "HUB ID key associated to the ORDER"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_ORDERS')
+                field: HUB_ID_ORDERS          
+      - name: HUB_ID_CUSTOMER
+        data_type: VARCHAR
+        description: "HUB ID key associated to the CUSTOMER"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_CUSTOMER')
+                field: HUB_ID_CUSTOMER         
+      - name: ORDERS_KEY
+        data_type: decimal(38,0)
+        description: "Business key associated to the ORDER"
+      - name: CUSTOMER_KEY
+        data_type: decimal(38,0)	  
+        description: "Business key associated to the CUSTOMER"
+      - name: TENANT
+        data_type: VARCHAR
+        description: "Tenant information"
+      - name: DT_LOAD
+        data_type: datetime
+        description: "Datetime the data has been loaded"
+      - name: RECORD_SOURCE
+        data_type: VARCHAR
+        description: "Source system for the record"	

@@ -1,0 +1,27 @@
+
+version: 2
+
+models:
+
+  - name: CUSTOMER_REF
+    description: "Reference data for customer for demo purposes"
+    config:
+      contract:
+        enforced: true
+        
+    columns:
+      - name: CUSTOMER_KEY
+        data_type: NUMBER(38,0)
+        description: "Customer primary key"
+        data_tests:
+          - unique
+          - not_null
+      - name: CUSTOMER_TYPE
+        data_type: VARCHAR
+        description: "Type of customer: F: person, J: Business"
+      - name: CUSTOMER_SEQ
+        data_type: NUMBER(38,0)
+        description: "Sequential number"
+      - name: DT_LOAD
+        data_type: TIMESTAMP_NTZ
+        description: "Datetime the data has been loaded"

@@ -1,0 +1,35 @@
+{{ config(
+      alias='SAT_REGION_DETAIL'
+    , materialized='incremental')
+}}
+
+
+WITH SAT_DATA AS (
+SELECT  
+      MD5(R_REGIONKEY) HUB_ID_REGION
+      , '{{ var('cod_tenant') }}' AS TENANT
+      , R_NAME AS REGION
+      , R_COMMENT AS COMMENT
+      , CURRENT_TIMESTAMP::TIMESTAMP_NTZ AS DT_LOAD
+      , MD5( COALESCE(R_NAME,'#')
+            ||COALESCE(R_COMMENT,'#') 
+            ) HASH_DIFF
+      , '{{ source('SF_SAMPLE', 'REGION') }}' AS RECORD_SOURCE
+FROM {{ source('SF_SAMPLE', 'REGION') }} 
+)
+
+SELECT 
+      SAT_DATA.HUB_ID_REGION
+      , SAT_DATA.TENANT
+      , SAT_DATA.REGION
+      , SAT_DATA.COMMENT
+      , SAT_DATA.DT_LOAD
+      , SAT_DATA.HASH_DIFF
+      , SAT_DATA.RECORD_SOURCE
+FROM SAT_DATA SAT_DATA
+LEFT JOIN {{ this }} SAT
+	ON SAT.HUB_ID_REGION =  SAT_DATA.HUB_ID_REGION
+   AND SAT.HASH_DIFF = SAT_DATA.HASH_DIFF
+WHERE SAT.HUB_ID_REGION IS NULL
+
+

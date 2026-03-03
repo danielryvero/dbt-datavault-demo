@@ -1,0 +1,30 @@
+
+version: 2
+
+models:
+
+  - name: HUB_NATION
+    description: "HUB Nation table"
+    config:
+      contract:
+        enforced: true
+            
+    columns:
+      - name: HUB_ID_NATION
+        data_type: VARCHAR
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: NATION_KEY
+        data_type: decimal(38,0)
+        description: "Business key associated to the hub"
+      - name: TENANT
+        data_type: VARCHAR
+        description: "Tenant information"
+      - name: DT_LOAD
+        data_type: datetime
+        description: "Datetime the data has been loaded"
+      - name: RECORD_SOURCE
+        data_type: VARCHAR
+        description: "Source system for the record"		

@@ -1,0 +1,49 @@
+demo_dv:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('DBT_SNOW_ACCOUNT') }}"
+      user: "{{ env_var('DBT_SNOW_USER') }}"
+      password: "{{ env_var('DBT_SNOW_PASSWORD') }}"
+      database: "{{ env_var('DBT_SNOW_DATABASE') }}"
+      schema: "{{ env_var('DBT_SNOW_SCHEMA') }}_DEV"  # esquema DEV
+      role: "{{ env_var('DBT_SNOW_ROLE') }}"
+      warehouse: "{{ env_var('DBT_SNOW_WAREHOUSE') }}"
+      threads: 4
+
+    pro:
+      type: snowflake
+      account: "{{ env_var('DBT_SNOW_ACCOUNT') }}"
+      user: "{{ env_var('DBT_SNOW_USER') }}"
+      password: "{{ env_var('DBT_SNOW_PASSWORD') }}"
+      database: "{{ env_var('DBT_SNOW_DATABASE') }}"
+      schema: "{{ env_var('DBT_SNOW_SCHEMA') }}_PRO"  # esquema PRO
+      role: "{{ env_var('DBT_SNOW_ROLE') }}"
+      warehouse: "{{ env_var('DBT_SNOW_WAREHOUSE') }}"
+      threads: 4
+
+demo_dv_ref:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('DBT_SNOW_ACCOUNT') }}"
+      user: "{{ env_var('DBT_SNOW_USER') }}"
+      password: "{{ env_var('DBT_SNOW_PASSWORD') }}"
+      database: "{{ env_var('DBT_SNOW_DATABASE') }}"
+      schema: "{{ env_var('DBT_SNOW_SCHEMA') }}_DEV"
+      role: "{{ env_var('DBT_SNOW_ROLE') }}"
+      warehouse: "{{ env_var('DBT_SNOW_WAREHOUSE') }}"
+      threads: 4
+
+    pro:
+      type: snowflake
+      account: "{{ env_var('DBT_SNOW_ACCOUNT') }}"
+      user: "{{ env_var('DBT_SNOW_USER') }}"
+      password: "{{ env_var('DBT_SNOW_PASSWORD') }}"
+      database: "{{ env_var('DBT_SNOW_DATABASE') }}"
+      schema: "{{ env_var('DBT_SNOW_SCHEMA') }}_PRO"
+      role: "{{ env_var('DBT_SNOW_ROLE') }}"
+      warehouse: "{{ env_var('DBT_SNOW_WAREHOUSE') }}"
+      threads: 4

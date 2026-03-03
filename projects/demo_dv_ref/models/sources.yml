@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: SF_SAMPLE
+    database: EDW_DV_DEMO
+    schema: LANDING
+    tables:
+      - name: CUSTOMER
+        description: CUSTOMER data table
+        identifier: CUSTOMER

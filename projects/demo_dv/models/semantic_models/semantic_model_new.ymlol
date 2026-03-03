@@ -1,0 +1,141 @@
+version: 2
+
+models:
+  - name: CUSTOMER_BAL_SL 
+    #name: CUSTOMER_BAL
+    description: "Represents the most up-to-date information and account balance for each customer."
+    semantic_model:
+      enabled: true
+      #name: sm_customer_balance
+      #name: sm_customer_balance
+    agg_time_dimension: load_timestamp      
+# ======================================================
+# Modelo Semántico para SALDO ACTUAL DEL CLIENTE
+# ======================================================
+    columns:
+      # La entidad principal es el cliente
+      - name: customer
+        entity:
+          type: primary
+          expr: HUB_ID_CUSTOMER
+
+      # Dimensiones: Atributos para filtrar y agrupar
+      - name: load_timestamp
+        granularity: day
+        dimension:
+          type: time
+          expr: DT_LOAD
+
+      - name: customer_name
+        dimension:
+          type: categorical
+          expr: CUSTOMER_NAME
+
+      - name: customer_address
+        dimension:  
+          type: categorical
+          expr: CUSTOMER_ADDRESS
+
+      - name: customer_phone
+        dimension:
+          type: categorical
+          expr: CUSTOMER_PHONE
+
+      # Medidas: Campos numéricos que se pueden agregar
+    metrics:
+      - name: total_balance
+        type: simple
+        agg: sum
+        expr: ACCOUNT_BALANCE
+      
+      - name: average_balance
+        type: simple      
+        agg: average
+        expr: ACCOUNT_BALANCE
+      
+      - name: customer_count
+        type: simple      
+        agg: count
+        expr: HUB_ID_CUSTOMER
+
+  - name: HIST_CUSTOMER_BAL_SL
+    #name: sm_customer_balance_history
+    description: "Represents the historical balances of customers over time."
+    semantic_model:   
+      enabled: true
+      #name: sm_customer_balance_history
+      #name: HIST_CUSTOMER_BAL
+    agg_time_dimension: metrics_load_timestamp
+    columns:
+      #entities
+      - name: customer
+        entity:
+          type: primary
+          expr: HUB_ID_CUSTOMER
+
+      - name: metrics_load_timestamp
+        granularity: day
+        dimension: 
+          type: time
+          expr: SAT_METRICS_DT_LOAD
+
+      - name: contact_load_timestamp
+        granularity: day
+        dimension:       
+          type: time
+          expr: SAT_CONTACT_DT_LOAD
+
+      - name: historical_customer_name     
+        dimension: 
+          type: categorical
+          expr: CUSTOMER_NAME
+
+      - name: phone_area_code
+        description: "El código de área del teléfono del cliente, usado como proxy geográfico."
+        dimension: 
+          type: categorical
+          expr: "SPLIT_PART(CUSTOMER_PHONE, '-', 1)"
+
+    metrics:
+      - name: historical_average_balance
+        description: "Average balance of customers across historical records."
+        type: simple
+        agg: average
+        expr: ACCOUNT_BALANCE
+
+      - name: customer_count_hist
+        description: "Number of distinct customers per time period."
+        type: simple
+        agg: count_distinct
+        expr: HUB_ID_CUSTOMER
+
+
+
+  # ======================================================
+  # MÉTRICAS: Cálculos de negocio que los usuarios consumen
+  # ======================================================
+    #metrics:
+      - name: current_total_balance
+        label: "Current Total Balance"
+        description: "The sum of the latest account balances across all customers."
+        type: simple
+
+      - name: current_average_balance
+        label: "Current Average Balance"
+        description: "The average of the latest account balances across all customers."
+        type: simple
+
+      - name: total_customers
+        label: "Total Customers"
+        description: "The total count of unique customers."
+        type: simple
+
+      - name: customer_count_hist
+        label: "Historical Customer Count"
+        description: "Number of distinct customers per time period."
+        type: simple
+
+      - name: historical_average_balance
+        label: "Historical Average Balance"
+        description: "Average balance of customers across historical records."
+        type: simple

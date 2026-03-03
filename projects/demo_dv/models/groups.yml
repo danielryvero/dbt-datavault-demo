@@ -1,0 +1,11 @@
+version: 2
+
+groups:
+  - name: finance
+    owner:
+      email: pedro.lencina@sdggroup.com
+      name: Pedro Lencina
+  - name: marketing
+    owner:
+      email: pedro.lencina@sdggroup.com
+      name: Pedro Lencina

@@ -1,0 +1,33 @@
+{{ config(
+      alias='SAT_NATION_DETAIL'
+    , materialized='incremental')
+}}
+
+
+WITH SAT_DATA AS (
+SELECT  
+      MD5(N_NATIONKEY) HUB_ID_NATION
+      , '{{ var('cod_tenant') }}' AS TENANT
+      , N_NAME AS NATION
+      , N_COMMENT AS COMMENT
+      , CURRENT_TIMESTAMP::TIMESTAMP_NTZ AS DT_LOAD
+      , MD5( COALESCE(N_NAME,'#')
+            ||COALESCE(N_COMMENT,'#') 
+            ) HASH_DIFF
+      , '{{ source('SF_SAMPLE', 'NATION') }}' AS RECORD_SOURCE
+FROM {{ source('SF_SAMPLE', 'NATION') }} 
+)
+
+SELECT 
+      SAT_DATA.HUB_ID_NATION
+      , SAT_DATA.TENANT
+      , SAT_DATA.NATION
+      , SAT_DATA.COMMENT
+      , SAT_DATA.DT_LOAD
+      , SAT_DATA.HASH_DIFF
+      , SAT_DATA.RECORD_SOURCE
+FROM SAT_DATA SAT_DATA
+LEFT JOIN {{ this }} SAT
+	ON SAT.HUB_ID_NATION =  SAT_DATA.HUB_ID_NATION
+   AND SAT.HASH_DIFF = SAT_DATA.HASH_DIFF
+WHERE SAT.HUB_ID_NATION IS NULL

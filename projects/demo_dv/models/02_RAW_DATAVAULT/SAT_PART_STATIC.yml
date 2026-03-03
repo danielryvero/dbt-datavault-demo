@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: SAT_PART_STATIC
+    description: "PART Satellite holding static information"
+    columns:
+      - name: HUB_ID_PART
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('HUB_PART')
+                field: HUB_ID_PART          
+      - name: TENANT
+        description: "Tenant information"          
+      - name: NAME
+        description: "Size of the part"
+      - name: MANUFACTURER
+        description: "Manufacturer of the part"
+      - name: BRAND
+        description: "Brand of the part"
+      - name: TYPE
+        description: "Type of the part"
+      - name: COMMENT
+        description: "Additional comments"
+      - name: DT_LOAD
+        description: "Datetime the data has been loaded"
+      - name: HASH_DIFF
+        description: "hash diff identifier of the record"
+      - name: RECORD_SOURCE
+        description: "Source system for the record"		

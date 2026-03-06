@@ -18,11 +18,9 @@
 [seed sample file]:projects/demo_dv/seeds/
 
 
-# SDG dbt demo project
+# dbt demo project: Datavault
 
-The goal of this repository is to create a project that can be utilized and distributed throughout the company. Ideally, this project would serve as a place for integrating new functionalities and features that are accessible to all, fostering a collaborative environment where everyone can reuse, improve and comprehend its workings. 
-
-Furthermore, beyond aiding in internal SDG development, this project could be instrumental in fulfilling client DEMO requests, providing a centralized demo hub with numerous functionalities to showcase to customers at their desired level of detail.
+The goal of this repository is to create a project that can be utilized and distributed throughout the community. Ideally, this project would serve as a place for integrating new functionalities and features that are accessible to all, fostering a collaborative environment where everyone can reuse, improve and comprehend its workings. 
 
 The repository contains 2 dbt projects. 'demo_dv' and 'demo_dv_ref'. The main project and the one that has built all functionalities in is 'demo_dv'. Ref project has been created to test the project reference functionality but does not work as it is only available in dbt_cloud Enterprise edition.
 
@@ -73,7 +71,7 @@ The repository contains 2 dbt projects. 'demo_dv' and 'demo_dv_ref'. The main pr
 
  - A development tool (VS, InteliJ) to be used if dbt-core
 
- - Connection to SDG's bitbucket account
+ - Connection to a Github account
 
 <div id='preparation'/>
 <br>
@@ -112,7 +110,7 @@ The script also creates the tables for the incremental models.
 
 ### Using dbt cloud
     
-- Connect to SDG's dbt-Cloud account.
+- Connect to dbt-Cloud account.
 
 - Go to Settings -> Projects and look for: 'dt-demo-dbt-datavault'
 
@@ -335,8 +333,6 @@ On the other hand, the macro 'create_latest_version_view.sql' has been added to 
 
 This demo project intends to use the functionality of [Project references]. This functionality is only available in dbt_cloud enterprise edition.
 
-In order to be ready to test it, the repository contains 2 dbt projects that are both available in SDG's dbt_cloud environment.
-
 The project that contains the reference is 'demo_dv_ref' in which, the model [STAGING/CUSTOMER_REF.sql] should point to any HUB/SAT/PIT/FACT containing customer data. Currently it is configured to point to a source.
 
 As this is an option only available in the enterprise edition, this functionality cannot be tested now.
@@ -533,8 +529,3 @@ All environment variables should start with 'DBT_'
 
 <div id='Contact'/>
 <br>
-
-
-## Contact
-    Pedro Lencina
-    pedro.lencina@sdggroup.com

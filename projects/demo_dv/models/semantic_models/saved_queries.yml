@@ -12,7 +12,8 @@ saved_queries:
       metrics:
         - historical_average_balance
       group_by:
-        - "Dimension('customer__phone_area_code')"
+        - "Dimension('hub_id_customer__phone_area_code')"
+        # this should be of the form <primary entity name>__<dimension_name>
 
     exports:
       - name: export_avg_balance_by_area_code

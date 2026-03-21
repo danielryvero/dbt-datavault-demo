@@ -27,9 +27,6 @@ vars:
   query_tagging: "TRUE"
   sw_debug: TRUE
 
-flags:
-  require_explicit_package_overrides_for_builtin_materializations: False
-
 on-run-end:
   - "{{ log_results( results ) }}"
 

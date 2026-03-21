@@ -5,6 +5,11 @@ models:
 
   - name: CUSTOMER_BAL
     description: "Table that contains the latest balance available for the customer"
+
+    semantic_model:
+      enabled: true
+    agg_time_dimension: load_timestamp  
+
     config:
       access: public
       group: finance
@@ -18,27 +23,72 @@ models:
         data_tests:
           - unique
           - not_null
+        entity:
+          type: primary
+
       - name: CUSTOMER_KEY
         data_type: decimal(38,0)
         description: "Business key associated to the customer"
+        entity: 
+         type: foreign
+
       - name: CUSTOMER_NAME
         data_type: VARCHAR
         description: "Customer Name"
+        dimension:
+          type: categorical
+
       - name: CUSTOMER_ADDRESS
         data_type: VARCHAR
         description: "Customer Address"
+        dimension:  
+          type: categorical
+
       - name: CUSTOMER_PHONE
         data_type: VARCHAR
         description: "Customer Phone number"
+        dimension: 
+          type: categorical
+
       - name: ACCOUNT_BALANCE
         data_type: number(12,2)
-        description: "Customer latest account balance"                
+        description: "Customer latest account balance"  
+
       - name: DT_LOAD
         data_type: datetime
         description: "Datetime the data has been initialy loaded"
+        granularity: day
+        dimension:
+          type: time
+
       - name: SAT_CONTACT_DT_LOAD
         data_type: datetime
         description: "Datetime the data has last been loaded in the contact satellite"
+
       - name: SAT_METRICS_DT_LOAD
         data_type: datetime
         description: "Datetime the data has last been loaded in the metrics satellite"
+
+#################################################
+    metrics:
+      - name: total_balance
+        label: "Current Total Balance"
+        description: "The sum of the latest account balances across all customers."
+        type: simple
+        agg: sum
+        expr: total_balance
+      
+      - name: average_balance
+        label: "Current Average Balance"
+        description: "The average of the latest account balances across all customers."
+        type: simple      
+        agg: average
+        expr: ACCOUNT_BALANCE
+      
+      - name: customer_count
+        label: "Total Customers"
+        description: "The total count of unique customers."      
+        type: simple      
+        agg: count
+        expr: HUB_ID_CUSTOMER
+

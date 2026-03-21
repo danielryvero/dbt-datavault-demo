@@ -5,6 +5,11 @@ models:
 
   - name: HIST_CUSTOMER_BAL
     description: "Table that contains the historical balance available for the customer"
+
+    semantic_model:   
+      enabled: true
+    agg_time_dimension: SAT_METRICS_DT_LOAD
+
     config:
       access: public
       group: finance
@@ -17,24 +22,62 @@ models:
         description: "The primary key for this table"
         data_tests:
           - not_null
+        entity:
+          type: primary
+
       - name: CUSTOMER_KEY
         data_type: decimal(38,0)
         description: "Business key associated to the customer"
+        entity: 
+          type: foreign
+
       - name: CUSTOMER_NAME
         data_type: VARCHAR
         description: "Customer Name"
+
       - name: CUSTOMER_ADDRESS
         data_type: VARCHAR
         description: "Customer Address"
+
       - name: CUSTOMER_PHONE
         data_type: VARCHAR
-        description: "Customer Phone number"
+        description: "Customer Phone number" 
+
       - name: ACCOUNT_BALANCE
         data_type: number(12,2)
-        description: "Customer latest account balance"                
+        description: "Customer latest account balance"       
+
       - name: SAT_CONTACT_DT_LOAD
         data_type: datetime
         description: "Datetime the data has last been loaded in the contact satellite"
+        granularity: day
+        dimension:       
+          type: time
+
       - name: SAT_METRICS_DT_LOAD
         data_type: datetime
         description: "Datetime the data has last been loaded in the metrics satellite"
+        granularity: day
+        dimension: 
+          type: time        
+
+    metrics:
+      - name: historical_average_balance
+        label: "Historical Average Balance"      
+        description: "Average balance of customers across historical records."
+        type: simple
+        agg: average
+        expr: account_balance        
+
+      - name: customer_count_hist
+        label: "Historical Customer Count"      
+        description: "Number of distinct customers per time period."
+        type: simple
+        agg: count_distinct
+        expr: customer_count_hist
+
+      - name: phone_area_code
+        type: simple
+        description: "El código de área del teléfono del cliente, usado como proxy geográfico."
+        agg: count_distinct
+        expr: "SPLIT_PART(CUSTOMER_PHONE, '-', 1)"

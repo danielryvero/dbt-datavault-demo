@@ -14,10 +14,7 @@ sources:
         description: CUSTOMER data table
         identifier: CUSTOMER
         config:
-          loaded_at_query: |
-            select max(DT_LOAD)
-            from {{ this }}
-            where DT_LOAD >= current_timestamp - interval '5 minutes'
+          loaded_at_field: DT_LOAD
           freshness:
             warn_after: {count: 2, period: day} 
             error_after: {count: 5, period: day} 

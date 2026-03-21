@@ -3,18 +3,6 @@
   , materialized='table')
 }}
 
-WITH hub_customer AS (
-        SELECT HUB_ID_CUSTOMER, DT_LOAD, TENANT 
-        FROM {{ ref('HUB_CUSTOMER') }}
-    ),
-
-    sat_customer_contact AS (
-        SELECT * FROM {{ ref('SAT_CUSTOMER_CONTACT') }}
-    ),
-
-    sat_customer_metrics AS (
-        SELECT * FROM {{ ref('SAT_CUSTOMER_METRICS') }}
-    )
 
 SELECT 
       HUB.HUB_ID_CUSTOMER
@@ -22,12 +10,12 @@ SELECT
     , SAT_CONTACT.DT_LOAD AS SAT_CONTACT_DT_LOAD
     , SAT_METRICS.DT_LOAD AS SAT_METRICS_DT_LOAD
     , HUB.TENANT
-FROM hub_customer HUB
+FROM {{ ref ('HUB_CUSTOMER' ) }} HUB
 LEFT JOIN ( SELECT HUB_ID_CUSTOMER, DT_LOAD 
-            FROM sat_customer_contact
-            QUALIFY ROW_NUMBER() OVER (PARTITION BY HUB_ID_CUSTOMER ORDER BY DT_LOAD DESC) = 1 
+            FROM {{ ref ('SAT_CUSTOMER_CONTACT' ) }} 
+            QUALIFY ROW_NUMBER() OVER (PARTITION BY HUB_ID_CUSTOMER ORDER BY DT_LOAD DESC) = 1
             ) SAT_CONTACT ON HUB.HUB_ID_CUSTOMER = SAT_CONTACT.HUB_ID_CUSTOMER
 LEFT JOIN ( SELECT HUB_ID_CUSTOMER, DT_LOAD 
-            FROM sat_customer_metrics
+            FROM {{ ref ('SAT_CUSTOMER_METRICS' ) }} 
             QUALIFY ROW_NUMBER() OVER (PARTITION BY HUB_ID_CUSTOMER ORDER BY DT_LOAD DESC) = 1
             )  SAT_METRICS ON HUB.HUB_ID_CUSTOMER = SAT_METRICS.HUB_ID_CUSTOMER
